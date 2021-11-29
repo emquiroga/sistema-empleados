@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Empleado;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+
 class EmpleadoController extends Controller
 {
     /**
@@ -14,7 +16,11 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        //
+        $params = [
+            'title' => 'Listado de Empleados'
+        ];
+        $datos['empleados'] = Empleado::paginate(5);
+        return view('empleado.index', $params, $datos);
     }
 
     /**
@@ -24,7 +30,10 @@ class EmpleadoController extends Controller
      */
     public function create()
     {
-        //
+        $params = [
+            'title' => 'Alta de Empleado'
+        ];
+        return view('empleado.create', $params);
     }
 
     /**
@@ -35,7 +44,25 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'apellido' => 'required',
+            'dni' => 'required',
+            'direccion' => 'required',
+            'telefono' => 'required',
+            'email' => 'required',
+            'cargo' => 'required',
+            'foto' => 'required',
+        ]);
+        $datosEmpleado = request()->except('_token');
+
+        if($request->hasFile('foto')) {
+            $datosEmpleado['foto'] = $request->file('foto')->store('uploads', 'public');
+        }
+
+        Empleado::insert($datosEmpleado);
+
+        return redirect('empleado')->with('message', 'Registro generado con éxito');
     }
 
     /**
@@ -55,9 +82,14 @@ class EmpleadoController extends Controller
      * @param  \App\Models\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function edit(Empleado $empleado)
+    public function edit($id)
     {
-        //
+        $empleado=Empleado::findOrFail($id);
+        $params = [
+            'title' => 'Editar datos',
+            'empleado' => $empleado
+        ];
+        return view('empleado.edit', $params, compact('empleado'));
     }
 
     /**
@@ -67,9 +99,34 @@ class EmpleadoController extends Controller
      * @param  \App\Models\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Empleado $empleado)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'apellido' => 'required',
+            'dni' => 'required',
+            'direccion' => 'required',
+            'telefono' => 'required',
+            'email' => 'required',
+            'cargo' => 'required',
+            'foto' => 'required',
+        ]);
+        $datosEmpleado = request()->except(['_token', '_method']);
+
+        if($request->hasFile('foto')) {
+            $empleado=Empleado::findOrFail($id);
+            Storage::delete('public/'. $empleado->foto);
+            $datosEmpleado['foto'] = $request->file('foto')->store('uploads', 'public');
+        }
+
+        Empleado::where('id', '=', $id)->update($datosEmpleado);
+
+        $empleado=Empleado::findOrFail($id);
+        $params = [
+            'title' => 'Editar datos',
+            'empleado' => $empleado
+        ];
+        return view('empleado.edit', $params, compact('empleado'));
     }
 
     /**
@@ -78,8 +135,12 @@ class EmpleadoController extends Controller
      * @param  \App\Models\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Empleado $empleado)
+    public function destroy($id)
     {
-        //
+        $empleado=Empleado::findOrFail($id);
+        if(Storage::delete('public/'. $empleado->foto)) {
+            Empleado::destroy($id);
+        }
+        return redirect('empleado')->with('message', 'Registro eliminado con éxito');
     }
 }
