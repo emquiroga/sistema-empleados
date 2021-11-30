@@ -1,9 +1,14 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-    <div class="container-fluid">
-        <div class="card" style="width: 18rem;">
-            <img src="{{ asset('storage') . '/' . $empleado->foto }}" class="card-img-top" alt="...">
+    @if(Session::has('message'))
+    <div class="alert alert-warning" role="alert">
+        {{Session::get('message')}}
+    </div>
+    @endif
+    <div class="container-fluid mx-auto">
+        <div class="card mx-auto" style="width: 18rem;">
+            <img class="img-thumbnail img-fluid" src="{{ asset('storage') . '/' . $empleado->foto }}" class="card-img-top" alt="...">
             <div class="card-body">
               <h4 class="card-tittle">{{$empleado->apellido}},</h4>
               <h5 class="card-title">{{ $empleado->nombre }}</h5>

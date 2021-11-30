@@ -14,8 +14,8 @@ use App\Http\Controllers\EmpleadoController;
 */
 
 
-Route::resource('empleado', EmpleadoController::class);
-Auth::routes();
+Route::resource('empleado', EmpleadoController::class)->middleware('auth');
+Auth::routes(['register' => false, 'reset' => false]);
 
 Route::get('/home', [App\Http\Controllers\EmpleadoController::class, 'index'])->name('home');
 

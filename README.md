@@ -9,4 +9,7 @@
 
 ## Sobre el proyecto:
 
--Tutorial: https://www.youtube.com/watch?v=9DU7WLZeam8&t=881s&ab_channel=Develoteca
+-   Tutorial: https://www.youtube.com/watch?v=9DU7WLZeam8&t=881s&ab_channel=Develoteca
+
+-   User email: prueba@mail.com
+-   Password: 123456789

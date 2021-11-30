@@ -12,9 +12,8 @@
             {{Session::get('message')}}
         </div>
     @endif
-    <table class="table table-light caption-top">
-        <caption>Lista de Empleados</caption>
-        <thead class="thead-light">
+    <table class="table table-success table-striped">
+        <thead class="table-success">
             <tr>
                 <th scope="col">Nombre</th>
                 <th scope="col">Apellido</th>
@@ -25,22 +24,21 @@
         <tbody>
             @foreach($empleados as $empleado)
             <tr>
-                <td>{{ $empleado->nombre }}</td>
-                <td>{{ $empleado->apellido }}</td>
-                <td>{{ $empleado->cargo }}</td>
-                <td>
-                    <div class="d-grid gap-2 d-md-block">
-                        <a href="{{ url('/empleado/' . $empleado->id ) }}" role="button"><button class="btn btn-warning w-100">Ver</button></a>
-                        <form method="POST" action="{{url('/empleado/' . $empleado->id)}}">
+                <td scope="col">{{ $empleado->nombre }}</td>
+                <td scope="col">{{ $empleado->apellido }}</td>
+                <td scope="col">{{ $empleado->cargo }}</td>
+                <td scope="col" class="d-flex">
+                        <a href="{{ url('/empleado/' . $empleado->id ) }}" role="button"><button class="btn btn-warning btn-sm"><i class="fas fa-search-plus"></i></button></a>
+                        <form class="d-inline" method="POST" action="{{url('/empleado/' . $empleado->id)}}">
                             @csrf
                             {{ method_field('DELETE')}}
-                            <button type="submit" value="Borrar" class="btn btn-danger w-100" onclick="return confirm('¿Estás seguro de querer borrar este registro?')" role="button">Borrar</button>
+                            <button type="submit" value="Borrar" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de querer borrar este registro?')" role="button"><i class="fas fa-trash"></i></button>
                         </form>
-                    </div>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
+    {!! $empleados->links() !!}
 </div>
 @endsection

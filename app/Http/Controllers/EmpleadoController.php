@@ -17,7 +17,7 @@ class EmpleadoController extends Controller
     public function index()
     {
         $params = [
-            'title' => 'Listado de Empleados'
+            'title' => 'Lista de Empleados'
         ];
         $datos['empleados'] = Empleado::paginate(5);
         return view('empleado.index', $params, $datos);
@@ -44,16 +44,23 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'dni' => 'required',
-            'direccion' => 'required',
-            'telefono' => 'required',
-            'email' => 'required',
-            'cargo' => 'required',
-            'foto' => 'required',
-        ]);
+        $validations = [
+            'nombre' => 'required|string|max:50',
+            'apellido' => 'required|string|max:50',
+            'dni' => 'required|string|max:25',
+            'direccion' => 'required|string|max:100',
+            'telefono' => 'required|string|max:25',
+            'email' => 'required|string|max:50',
+            'cargo' => 'required|string|max:50',
+            'foto' => 'required|max:10000|mimes:jpeg,jpg,png',
+        ];
+        $mensaje = [
+            'required' => 'El campo :attribute es obligatorio',
+            'foto.required' => 'La foto es obligatoria',
+        ];
+
+        $this->validate($request, $validations, $mensaje);
+
         $datosEmpleado = request()->except('_token');
 
         if($request->hasFile('foto')) {
@@ -106,16 +113,25 @@ class EmpleadoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'dni' => 'required',
-            'direccion' => 'required',
-            'telefono' => 'required',
-            'email' => 'required',
-            'cargo' => 'required',
-            'foto' => 'required',
-        ]);
+        $validations = [
+            'nombre' => 'required|string|max:50',
+            'apellido' => 'required|string|max:50',
+            'dni' => 'required|string|max:25',
+            'direccion' => 'required|string|max:100',
+            'telefono' => 'required|string|max:25',
+            'email' => 'required|string|max:50',
+            'cargo' => 'required|string|max:50',
+        ];
+        $mensaje = [
+            'required' => 'El campo :attribute es obligatorio'
+        ];
+
+        if($request->hasFile('foto')) {
+            $validations = ['foto' => 'required|max:10000|mimes:jpeg,jpg,png'];
+            $mensaje = ['foto.required' => 'La foto es obligatoria'];
+        }
+        $this->validate($request, $validations, $mensaje);
+
         $datosEmpleado = request()->except(['_token', '_method']);
 
         if($request->hasFile('foto')) {
@@ -131,7 +147,7 @@ class EmpleadoController extends Controller
             'title' => 'Editar datos',
             'empleado' => $empleado
         ];
-        return view('empleado.edit', $params, compact('empleado'));
+        return redirect('/empleado/' . $id)->with('message', 'Registro actualizado con éxito');
     }
 
     /**
