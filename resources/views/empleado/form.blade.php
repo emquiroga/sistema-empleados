@@ -33,3 +33,5 @@
     @endisset
     <input class="form-control" type="file" name="foto" id="foto" value="{{isset($empleado) ? $empleado->foto : ''}}">
 </div>
+<button class="btn btn-primary mt-3 w-100">{{$mode}} entrada</button>
+

@@ -13,8 +13,12 @@ use App\Http\Controllers\EmpleadoController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::resource('empleado', EmpleadoController::class);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\EmpleadoController::class, 'index'])->name('home');
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', [App\Http\Controllers\EmpleadoController::class, 'index'])->name('home');
+});

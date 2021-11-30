@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-@include('partials.head')
-<body>
+@extends('layouts.app')
+@section('content')
+<div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <h3 class="navbar-brand">{{$title}}</h3>
@@ -12,9 +11,18 @@
          <form action="{{url('/empleado/' . $empleado->id )}}" method="POST" enctype="multipart/form-data">
             @csrf
             {{method_field('PATCH')}}
-            @include('empleado.form', ['mode'=>'edit'])
-            <button class="btn btn-primary mt-3">Actualizar Datos</button>
+            @include('empleado.form', ['mode'=>'Editar'])
         </form>
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{$error}}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
     </div>
-</body>
-</html>
+</div>
+@endsection
+
